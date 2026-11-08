@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogPostCard from '../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+import { SITE } from '../utils/seo';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featuredPosts = allPosts.filter((post) => post.data.featured).slice(0, 2);
+const recentPosts = allPosts.filter((post) => !post.data.featured).slice(0, 3);
+---
+
+<BaseLayout title={`${SITE.title} — Minimalist Developer Blog`}>
+  <!-- Hero Section -->
+  <section class="py-12 sm:py-16 flex flex-col items-start gap-6 border-b border-neutral-200 dark:border-neutral-800">
+    <!-- Status Badge -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 text-neutral-600 dark:text-neutral-400">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span>Astro 5 + Vercel Theme</span>
+      <span class="text-neutral-300 dark:text-neutral-700">|</span>
+      <span>100% Static Edge</span>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-950 dark:text-white leading-[1.1]">
+      High performance. <br class="hidden sm:inline" />
+      <span class="text-neutral-400 dark:text-neutral-500 font-normal">Minimalist design.</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="max-w-xl text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+      A sleek developer blog engineered with Astro, Tailwind CSS, and Vercel design aesthetics. Zero runtime JavaScript bloat, type-safe content collections, and instant deployment.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-wrap items-center gap-3 pt-2">
+      <a
+        href="/blog"
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+      >
+        Read Articles
+      </a>
+      <a
+        href="https://github.com/vercel"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://vercel.com/new"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+      >
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+          <path d="M12 4L20 18H4L12 4Z" />
+        </svg>
+        Deploy to Vercel
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Articles -->
+  {featuredPosts.length > 0 && (
+    <section class="py-12 border-b border-neutral-200 dark:border-neutral-800">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
+          Featured Posts
+        </h2>
+        <a
+          href="/blog"
+          class="text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+        >
+          View all →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {featuredPosts.map((post) => (
+          <BlogPostCard post={post} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Recent Articles -->
+  <section class="py-12 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
+        Recent Writings
+      </h2>
+      <a
+        href="/blog"
+        class="text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+      >
+        All posts ({allPosts.length}) →
+      </a>
+    </div>
+    <div class="flex flex-col gap-3">
+      {recentPosts.map((post) => (
+        <BlogPostCard post={post} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Tech Highlights / Features -->
+  <section class="py-12">
+    <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold mb-6">
+      Built for the Modern Web
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
+        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">01 / SPEED</div>
+        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">100/100 Core Web Vitals</h3>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Static HTML served directly from Vercel's global Anycast edge network with zero database query lag.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
+        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">02 / TYPE-SAFETY</div>
+        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">Content Layer & Zod</h3>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Catch invalid frontmatter dates and missing attributes at compile-time with strictly typed Markdown.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
+        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">03 / DESIGN</div>
+        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">Vercel Aesthetics</h3>
+        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Geist typography, dark mode toggle, subtle borders, and RSS feeds out of the box.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

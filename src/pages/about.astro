@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../utils/seo';
+
+const experiences = [
+  {
+    role: 'Senior Frontend Engineer',
+    company: 'NextGen Cloud',
+    period: '2024 — Present',
+    description: 'Leading edge performance optimization, web vitals improvements, and design system architecture.',
+  },
+  {
+    role: 'Full Stack Developer',
+    company: 'HyperScale Labs',
+    period: '2022 — 2024',
+    description: 'Developed developer tooling, CLI applications, and headless content delivery pipelines.',
+  },
+  {
+    role: 'Open Source Contributor',
+    company: 'Ecosystem',
+    period: '2020 — 2022',
+    description: 'Maintained web performance libraries, markdown plugins, and documentation toolchains.',
+  },
+];
+
+const techStack = [
+  { category: 'Frontend', items: ['Astro', 'TypeScript', 'Tailwind CSS', 'React', 'HTML5/CSS3'] },
+  { category: 'Backend & Edge', items: ['Node.js', 'Vercel Serverless', 'Cloudflare Workers', 'Edge Middleware'] },
+  { category: 'Tooling & CI/CD', items: ['Git', 'GitHub Actions', 'Vite', 'Turborepo', 'Vercel CLI'] },
+];
+---
+
+<BaseLayout title="About — Bio & Background" description="Background, technical skills, and software philosophy.">
+  <div class="max-w-2xl mx-auto space-y-12">
+    <!-- Header -->
+    <header class="border-b border-neutral-200 dark:border-neutral-800 pb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white mb-4">
+        About Me
+      </h1>
+      <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        I am a software engineer focused on building fast, accessible, and elegantly designed web applications. I care deeply about web performance, minimal runtime overhead, and clean typography.
+      </p>
+    </header>
+
+    <!-- Philosophy -->
+    <section class="space-y-4">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
+        Engineering Philosophy
+      </h2>
+      <p class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+        The web platform is capable of extraordinary performance when we resist unnecessary complexity. By delivering pre-rendered HTML, caching aggressively at the edge, and using progressive enhancement, we create digital experiences that feel instantaneous for everyone.
+      </p>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section class="space-y-4">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
+        Experience
+      </h2>
+      <div class="space-y-6">
+        {experiences.map((exp) => (
+          <div class="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-neutral-300 dark:before:bg-neutral-700">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between text-sm mb-1">
+              <span class="font-semibold text-neutral-900 dark:text-neutral-100">
+                {exp.role} <span class="text-neutral-400 font-normal">at {exp.company}</span>
+              </span>
+              <span class="font-mono text-xs text-neutral-400 dark:text-neutral-500">
+                {exp.period}
+              </span>
+            </div>
+            <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              {exp.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="space-y-4">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
+        Skills & Technologies
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {techStack.map((group) => (
+          <div class="p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30">
+            <div class="text-xs font-mono font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+              {group.category}
+            </div>
+            <ul class="space-y-1 text-xs text-neutral-700 dark:text-neutral-300">
+              {group.items.map((item) => (
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-neutral-400"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contact & Connect -->
+    <section class="pt-6 border-t border-neutral-200 dark:border-neutral-800">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold mb-3">
+        Connect
+      </h2>
+      <div class="flex items-center gap-4 text-xs font-mono">
+        <a
+          href={SITE.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors"
+        >
+          GitHub →
+        </a>
+        <a
+          href={`https://x.com/${SITE.twitter.replace('@', '')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors"
+        >
+          X (Twitter) →
+        </a>
+        <a
+          href="mailto:contact@example.com"
+          class="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors"
+        >
+          Email →
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

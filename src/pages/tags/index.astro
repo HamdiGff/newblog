@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+// Count tags
+const tagCountMap: Record<string, number> = {};
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCountMap[tag] = (tagCountMap[tag] || 0) + 1;
+  });
+});
+
+const sortedTags = Object.entries(tagCountMap).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="All Tags — Topic Directory" description="Explore articles categorized by technology, design, and architecture topics.">
+  <div class="max-w-2xl mx-auto">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
+        Tags & Topics
+      </h1>
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">
+        Browse articles grouped by subject matter and technical keywords.
+      </p>
+    </header>
+
+    <div class="flex flex-wrap gap-2.5">
+      {sortedTags.map(([tag, count]) => (
+        <TagBadge tag={tag} count={count} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

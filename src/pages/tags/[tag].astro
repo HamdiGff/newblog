@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const allTags = new Set(allPosts.flatMap((post) => post.data.tags || []));
+
+  return Array.from(allTags).map((tag) => {
+    const filteredPosts = allPosts
+      .filter((post) => post.data.tags?.includes(tag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    return {
+      params: { tag: tag.toLowerCase() },
+      props: { tag, posts: filteredPosts },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`#${tag} Articles — Topic Archive`}
+  description={`Explore all articles tagged with #${tag}`}
+>
+  <div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+      <a
+        href="/tags"
+        class="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors mb-4"
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        All tags
+      </a>
+      <h1 class="text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
+        Tag: <span class="font-mono text-neutral-500">#{tag}</span>
+      </h1>
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">
+        Showing {posts.length} article{posts.length === 1 ? '' : 's'} categorized under #{tag}.
+      </p>
+    </header>
+
+    <!-- Post list -->
+    <div class="flex flex-col gap-3">
+      {posts.map((post) => (
+        <BlogPostCard post={post} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
