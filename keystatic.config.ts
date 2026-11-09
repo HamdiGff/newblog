@@ -1,13 +1,17 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export default config({
-  storage: {
-    kind: 'github',
-    repo: {
-      owner: 'HamdiGff',
-      name: 'newblog',
-    },
-  },
+  storage: isDev
+    ? { kind: 'local' }
+    : {
+        kind: 'github',
+        repo: {
+          owner: 'HamdiGff',
+          name: 'newblog',
+        },
+      },
   ui: {
     brand: {
       name: 'CHEATER.FUN Admin',
