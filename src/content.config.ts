@@ -14,12 +14,30 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     thumbnail: z.string().optional(),
     downloadUrl: z.string().optional(),
+    mirrorUrl: z.string().optional(),
     scriptCode: z.string().optional(),
     views: z.number().default(1250),
     downloads: z.number().default(420),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+
+    // Advanced WordPress & Cheater.fun Features
+    author: z.string().default('CheaterFun Team'),
+    virusScanScore: z.string().default('0/68 Clean'),
+    virusTotalUrl: z.string().optional(),
+    antiCheat: z.string().optional(),
+    fileSize: z.string().default('12.4 MB'),
+    archivePassword: z.string().optional(),
+    platforms: z.array(z.string()).default(['Windows 10', 'Windows 11']),
+    executors: z.array(z.string()).default([]),
+
+    // SEO Overrides
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    ogImage: z.string().optional(),
+    canonicalUrl: z.string().optional(),
+    noIndex: z.boolean().default(false),
   }),
 });
 

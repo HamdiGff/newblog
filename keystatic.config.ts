@@ -1,4 +1,5 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
+import { block } from '@keystatic/core/content-components';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -17,67 +18,89 @@ export default config({
       name: 'CHEATER.FUN Admin',
     },
     navigation: {
-      'Content': ['posts'],
-      'Site Settings': ['siteSettings', 'categories', 'socialLinks'],
+      'Content Management': ['posts'],
+      'Site Customizer': ['announcement', 'antiCheatTracker', 'faqManager'],
+      'Settings & SEO': ['siteSettings', 'socialLinks'],
     },
   },
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // COLLECTIONS
+  // COLLECTIONS (Posts & Cheats)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   collections: {
-    // Blog Posts / Cheats Collection
     posts: collection({
-      label: 'Posts & Cheats',
+      label: 'Cheats & Scripts',
       slugField: 'title',
       path: 'src/content/blog/*',
       format: { contentField: 'body' },
       entryLayout: 'content',
+
+      // WordPress-Style Columns in List View
+      columns: ['game', 'status', 'version', 'views', 'downloads', 'pubDate'],
+
+      // Live Post Preview Link
+      previewUrl: '/blog/{slug}',
+
       schema: {
         title: fields.slug({
-          name: { label: 'Post Title', description: 'The main heading of the post or cheat release.' },
+          name: {
+            label: 'Post Title',
+            description: 'Main headline for the release (e.g. Roblox Blox Fruits Script: Auto Farm).',
+          },
         }),
         description: fields.text({
-          label: 'SEO Description / Excerpt',
-          description: 'Short description shown in search results and post cards (max 160 chars).',
+          label: 'Excerpt / Summary',
+          description: 'Short summary shown in post cards and search engine snippets (120-160 chars).',
           multiline: true,
         }),
-        game: fields.text({
-          label: 'Game Name',
-          description: 'e.g. Roblox, Counter-Strike 2, GTA V, FiveM',
+        game: fields.select({
+          label: 'Game Title',
+          options: [
+            { label: 'Roblox', value: 'Roblox' },
+            { label: 'Counter-Strike 2 (CS2)', value: 'Counter-Strike 2' },
+            { label: 'GTA V / GTA Online', value: 'GTA V' },
+            { label: 'FiveM Roleplay', value: 'FiveM' },
+            { label: 'Valorant', value: 'Valorant' },
+            { label: 'Apex Legends', value: 'Apex Legends' },
+            { label: 'Minecraft', value: 'Minecraft' },
+            { label: 'General / Tool', value: 'General' },
+          ],
           defaultValue: 'Roblox',
         }),
         category: fields.select({
           label: 'Category',
-          description: 'The type of release.',
           options: [
-            { label: 'Cheats', value: 'Cheats' },
             { label: 'Scripts', value: 'Scripts' },
-            { label: 'Injectors', value: 'Injectors' },
+            { label: 'Cheats', value: 'Cheats' },
+            { label: 'Injectors & Loaders', value: 'Injectors' },
             { label: 'Executors', value: 'Executors' },
-            { label: 'Guides', value: 'Guides' },
-            { label: 'News', value: 'News' },
+            { label: 'Guides & Tutorials', value: 'Guides' },
+            { label: 'News & Updates', value: 'News' },
           ],
-          defaultValue: 'Cheats',
+          defaultValue: 'Scripts',
         }),
         status: fields.select({
-          label: 'Detection Status',
+          label: 'Detection & Working Status',
           options: [
-            { label: '🟢 Undetected', value: 'Undetected' },
+            { label: '🟢 Undetected (Safe)', value: 'Undetected' },
             { label: '✅ Working', value: 'Working' },
-            { label: '🔄 Updated', value: 'Updated' },
-            { label: '🧪 Testing', value: 'Testing' },
-            { label: '🆓 Free', value: 'Free' },
+            { label: '🔄 Updated (New Patch)', value: 'Updated' },
+            { label: '🧪 Testing / Risky', value: 'Testing' },
+            { label: '🆓 Free Forever', value: 'Free' },
           ],
           defaultValue: 'Undetected',
         }),
         version: fields.text({
-          label: 'Version',
-          description: 'e.g. v3.8.2',
-          defaultValue: 'v1.0',
+          label: 'Cheat / Game Version',
+          description: 'e.g. v3.8.2 or Latest Steam Patch',
+          defaultValue: 'v1.0.0',
+        }),
+        author: fields.text({
+          label: 'Author / Uploader',
+          defaultValue: 'CheaterFun Team',
         }),
         pubDate: fields.date({
-          label: 'Publish Date',
+          label: 'Published Date',
           defaultValue: { kind: 'today' },
         }),
         updatedDate: fields.date({
@@ -85,168 +108,299 @@ export default config({
         }),
         thumbnail: fields.text({
           label: 'Thumbnail / Featured Image URL',
-          description: 'Full URL to the banner image shown on the post card and article header.',
+          description: 'Direct image link (Unsplash or direct image URL).',
         }),
+
+        // ─── Downloads & Script Section ───────────────────────
         downloadUrl: fields.url({
-          label: 'Download Link URL',
-          description: 'The direct download or external link for the cheat/script.',
+          label: 'Primary Download Link URL',
+          description: 'Direct download or external archive link (.zip, .exe, .dll).',
+        }),
+        mirrorUrl: fields.url({
+          label: 'Backup / Mirror Download URL (Optional)',
+        }),
+        archivePassword: fields.text({
+          label: 'Archive Password (if zipped)',
+          description: 'e.g. 1234 or cheaterfun (leave blank if none)',
+        }),
+        fileSize: fields.text({
+          label: 'File Size',
+          defaultValue: '12.4 MB',
         }),
         scriptCode: fields.text({
-          label: 'Script Code (Lua / Raw)',
-          description: 'Roblox Lua or raw script code to show in the one-click copy box.',
+          label: 'Roblox Lua / Raw Script (One-Click Copy)',
+          description: 'Code pasted here renders inside the automatic copy-to-clipboard box.',
           multiline: true,
         }),
+
+        // ─── Security & Anti-Cheat Metadata ───────────────────
+        virusScanScore: fields.text({
+          label: 'VirusTotal Scan Result',
+          defaultValue: '0/68 Clean',
+          description: 'e.g. 0/68 Clean or Verified Safe',
+        }),
+        virusTotalUrl: fields.url({
+          label: 'VirusTotal Report URL (Optional)',
+        }),
+        antiCheat: fields.text({
+          label: 'Target Anti-Cheat',
+          description: 'e.g. Byfron/Hyperion, Valve Anti-Cheat (VAC), BattlEye, EasyAntiCheat',
+        }),
+        platforms: fields.array(
+          fields.text({ label: 'Platform' }),
+          {
+            label: 'Supported Platforms',
+            description: 'e.g. Windows 10, Windows 11, Android (Mobile), iOS',
+            itemLabel: (props) => props.fields.value.value || 'Platform',
+          }
+        ),
+        executors: fields.array(
+          fields.text({ label: 'Executor' }),
+          {
+            label: 'Compatible Executors (for Roblox)',
+            description: 'e.g. Solara, Wave, Codex, Delta, Fluxus',
+            itemLabel: (props) => props.fields.value.value || 'Executor',
+          }
+        ),
+
+        // ─── Engagement & Visibility ──────────────────────────
         views: fields.integer({
-          label: 'Views Count',
-          defaultValue: 1000,
+          label: 'Total Views Count',
+          defaultValue: 1500,
           validation: { min: 0 },
         }),
         downloads: fields.integer({
-          label: 'Downloads Count',
-          defaultValue: 500,
+          label: 'Total Downloads Count',
+          defaultValue: 650,
           validation: { min: 0 },
         }),
         featured: fields.checkbox({
-          label: 'Featured Post',
-          description: 'Mark this as a featured / highlighted post on the homepage.',
+          label: '⭐ Pin as Featured Post',
+          description: 'Featured releases appear prominently at the top of the homepage.',
           defaultValue: false,
         }),
         draft: fields.checkbox({
-          label: 'Draft (Hidden from public)',
-          description: 'Enable this to hide the post from the public while editing.',
+          label: '🔒 Draft Mode (Hidden from public)',
+          description: 'Enable to keep this post unpublished while editing.',
           defaultValue: false,
         }),
         tags: fields.array(
           fields.text({ label: 'Tag' }),
           {
-            label: 'Tags',
-            description: 'Add relevant keyword tags (e.g. Aimbot, Auto Farm, Executor, ESP).',
+            label: 'Tags & Keywords',
+            description: 'Keywords for live search (e.g. Aimbot, Auto Farm, ESP, Wallhack).',
             itemLabel: (props) => props.fields.value.value || 'Tag',
           }
         ),
-        // ─── SEO & OpenGraph Panel ───────────────────────────
+
+        // ─── WordPress-Grade SEO Suite ───────────────────────
         seoTitle: fields.text({
-          label: '🔍 Custom SEO Title',
-          description: 'Custom HTML <title> override (optional). Falls back to Post Title if empty.',
+          label: '🔍 Custom SEO Title (<title> tag)',
+          description: 'Optional custom title override for Google Search results.',
         }),
         seoDescription: fields.text({
-          label: '🔍 SEO Meta Description Override',
-          description: 'Custom meta description for search engines (max 160 chars).',
+          label: '🔍 Meta Description for Google',
+          description: 'Custom search snippet (150-160 characters recommended).',
           multiline: true,
         }),
         ogImage: fields.text({
-          label: '🖼️ OpenGraph Share Image URL',
-          description: 'The image shown when this post is shared on Twitter / Discord / Facebook.',
+          label: '🖼️ OpenGraph / Social Share Image',
+          description: 'Custom card image shown when shared on Discord, X/Twitter, or Facebook.',
         }),
         canonicalUrl: fields.url({
           label: '🔗 Canonical URL Override',
-          description: 'Only needed if you are cross-posting from another source.',
         }),
         noIndex: fields.checkbox({
-          label: '🚫 No Index (hide from Google)',
-          description: 'Adds noindex meta tag to prevent search indexing.',
+          label: '🚫 No-Index (Hide from Google)',
           defaultValue: false,
         }),
 
-        // ─── Post Body (Markdoc / Markdown) ─────────────────
+        // ─── Gutenberg-Style Content Body ─────────────────────
         body: fields.markdoc({
-          label: 'Post Content',
-          description: 'Full article body written in Markdown. Use headings, lists, code blocks, and tables.',
+          label: 'Article Body (Rich Text & Gutenberg Blocks)',
+          components: {
+            // Alert / Callout Block
+            Callout: block({
+              label: 'Alert / Callout Box',
+              schema: {
+                type: fields.select({
+                  label: 'Alert Type',
+                  options: [
+                    { label: '⚠️ Warning / Anti-Cheat Risk', value: 'warning' },
+                    { label: 'ℹ️ Information / Tip', value: 'info' },
+                    { label: '✅ Success / Verified', value: 'success' },
+                    { label: '🚨 Danger / Detected', value: 'danger' },
+                  ],
+                  defaultValue: 'info',
+                }),
+                title: fields.text({ label: 'Callout Title', defaultValue: 'Important Notice' }),
+                message: fields.text({ label: 'Message', multiline: true }),
+              },
+            }),
+
+            // Dedicated Download Button Block
+            DownloadBox: block({
+              label: 'Download Action Box',
+              schema: {
+                buttonLabel: fields.text({ label: 'Button Label', defaultValue: 'Download Direct (.zip)' }),
+                downloadUrl: fields.url({ label: 'Download URL' }),
+                fileSize: fields.text({ label: 'File Size', defaultValue: '14.2 MB' }),
+                virusScanStatus: fields.text({ label: 'Scan Status', defaultValue: '0/68 Clean' }),
+              },
+            }),
+
+            // Keybind Controls Table
+            Keybind: block({
+              label: 'Game Control / Keybind',
+              schema: {
+                key: fields.text({ label: 'Key', description: 'e.g. INSERT, F5, NUMPAD 8' }),
+                action: fields.text({ label: 'Action / Function', description: 'e.g. Open Cheat Menu' }),
+              },
+            }),
+
+            // Video Demo Embed Block
+            YouTubeEmbed: block({
+              label: 'YouTube Gameplay Video',
+              schema: {
+                videoId: fields.text({
+                  label: 'YouTube Video ID',
+                  description: 'The 11-character ID from the URL (e.g. dQw4w9WgXcQ)',
+                }),
+              },
+            }),
+          },
         }),
       },
     }),
   },
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // SINGLETONS (Global Site Settings)
+  // SINGLETONS (WordPress Site Customizers)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   singletons: {
-    // Global SEO & Site Identity Settings
+    // 1. Top Announcement Bar (Header Notification)
+    announcement: singleton({
+      label: '📢 Header Announcement Ticker',
+      path: 'src/data/announcement',
+      schema: {
+        enabled: fields.checkbox({ label: 'Show Announcement Bar', defaultValue: true }),
+        pulseText: fields.text({ label: 'Pulse Badge Text', defaultValue: 'LIVE UPDATE' }),
+        message: fields.text({
+          label: 'Announcement Message',
+          defaultValue: 'All Cheats Tested & Working on Latest Steam/Roblox Patches!',
+        }),
+        linkUrl: fields.url({ label: 'Banner Link URL (Optional)' }),
+        linkText: fields.text({ label: 'Link Text', defaultValue: 'View Changelog →' }),
+      },
+    }),
+
+    // 2. Anti-Cheat Status Dashboard Tracker
+    antiCheatTracker: singleton({
+      label: '🛡️ Anti-Cheat Status Monitor',
+      path: 'src/data/antiCheatTracker',
+      schema: {
+        vacStatus: fields.select({
+          label: 'Valve Anti-Cheat (CS2)',
+          options: [
+            { label: '🟢 Undetected', value: 'Undetected' },
+            { label: '🟡 Updating', value: 'Updating' },
+            { label: '🔴 Detected', value: 'Detected' },
+          ],
+          defaultValue: 'Undetected',
+        }),
+        byfronStatus: fields.select({
+          label: 'Roblox Byfron / Hyperion',
+          options: [
+            { label: '🟢 Bypass Working', value: 'Bypass Working' },
+            { label: '🟡 Patch Pending', value: 'Patch Pending' },
+            { label: '🔴 Offline', value: 'Offline' },
+          ],
+          defaultValue: 'Bypass Working',
+        }),
+        battleyeStatus: fields.select({
+          label: 'BattlEye (GTA V / R6S)',
+          options: [
+            { label: '🟢 Undetected', value: 'Undetected' },
+            { label: '🟡 Updating', value: 'Updating' },
+            { label: '🔴 Detected', value: 'Detected' },
+          ],
+          defaultValue: 'Undetected',
+        }),
+        fivemStatus: fields.select({
+          label: 'FiveM Anticheat',
+          options: [
+            { label: '🟢 Undetected', value: 'Undetected' },
+            { label: '🟡 Testing', value: 'Testing' },
+            { label: '🔴 Detected', value: 'Detected' },
+          ],
+          defaultValue: 'Undetected',
+        }),
+        lastCheckedDate: fields.text({
+          label: 'Last Verification Date',
+          defaultValue: 'Today at 06:00 UTC',
+        }),
+      },
+    }),
+
+    // 3. Global Site Settings & SEO
     siteSettings: singleton({
-      label: '⚙️ Site Settings & Global SEO',
+      label: '⚙️ Site Identity & Global SEO',
       path: 'src/data/siteSettings',
       schema: {
-        siteName: fields.text({
-          label: 'Site Name',
-          defaultValue: 'CHEATER.FUN',
-        }),
+        siteName: fields.text({ label: 'Site Name', defaultValue: 'CHEATER.FUN' }),
         tagline: fields.text({
           label: 'Tagline',
-          defaultValue: 'Free Undetected Game Cheats & Roblox Scripts',
+          defaultValue: 'Best Free Undetected Game Cheats, Scripts & Trainers',
         }),
-        siteDescription: fields.text({
-          label: 'Default SEO Description',
+        description: fields.text({
+          label: 'Default SEO Meta Description',
           multiline: true,
-          defaultValue: 'Download free undetected game cheats, Roblox scripts, CS2 hacks, GTA V mod menus and executors.',
-        }),
-        siteUrl: fields.url({
-          label: 'Site URL',
+          defaultValue:
+            'Download free undetected game cheats, Roblox scripts, CS2 hacks, GTA V mod menus and trainers verified daily.',
         }),
         googleAnalyticsId: fields.text({
-          label: '📊 Google Analytics ID (G-XXXXXXXXXX)',
-          description: 'Enter your GA4 Measurement ID to enable analytics tracking.',
+          label: 'Google Analytics 4 Measurement ID (G-XXXXXXXXXX)',
+          description: 'Leave empty if not using GA4.',
         }),
-        googleSearchConsoleVerification: fields.text({
-          label: '🔍 Google Search Console Verification Code',
+        googleSearchConsoleCode: fields.text({
+          label: 'Google Search Console Verification Tag',
         }),
-        favicon: fields.text({
-          label: '🖼️ Favicon URL',
+        defaultOgImage: fields.text({
+          label: 'Default Social Share Image URL',
         }),
-        ogDefaultImage: fields.text({
-          label: '🖼️ Default OpenGraph Share Image',
-          description: 'Fallback share image when a post does not have a custom og:image.',
-        }),
-        robotsTxt: fields.text({
-          label: '🤖 robots.txt Content',
-          multiline: true,
-          defaultValue: 'User-agent: *\nAllow: /',
+        footerText: fields.text({
+          label: 'Footer Copyright Notice',
+          defaultValue: '© 2026 CHEATER.FUN — All rights reserved.',
         }),
       },
     }),
 
-    // Social Links Settings
+    // 4. Social & Community Links
     socialLinks: singleton({
-      label: '🔗 Social Media & Community Links',
+      label: '💬 Discord & Community Settings',
       path: 'src/data/socialLinks',
       schema: {
-        discordUrl: fields.url({ label: 'Discord Invite URL' }),
-        telegramUrl: fields.url({ label: 'Telegram Channel URL' }),
-        twitterUrl: fields.url({ label: 'X / Twitter Profile URL' }),
-        githubUrl: fields.url({ label: 'GitHub Repository URL' }),
-        youtubeUrl: fields.url({ label: 'YouTube Channel URL' }),
-        discordMemberCount: fields.text({
-          label: 'Discord Member Count (Display)',
-          defaultValue: '24,500',
-        }),
+        discordInvite: fields.url({ label: 'Discord Invite URL' }),
+        discordMembers: fields.text({ label: 'Discord Member Count', defaultValue: '24,500' }),
+        telegramChannel: fields.url({ label: 'Telegram Channel URL' }),
+        twitterProfile: fields.url({ label: 'X / Twitter URL' }),
+        githubRepo: fields.url({ label: 'GitHub Repository URL' }),
       },
     }),
 
-    // Categories Management
-    categories: singleton({
-      label: '🏷️ Game Categories List',
-      path: 'src/data/categories',
+    // 5. FAQ Manager
+    faqManager: singleton({
+      label: '❓ FAQ & Knowledge Base',
+      path: 'src/data/faqManager',
       schema: {
         items: fields.array(
           fields.object({
-            name: fields.text({ label: 'Category Name', description: 'e.g. Roblox Scripts, CS2 Cheats' }),
-            slug: fields.text({ label: 'URL Slug', description: 'e.g. roblox-scripts (no spaces, lowercase)' }),
-            description: fields.text({ label: 'Short Description', multiline: true }),
-            icon: fields.text({ label: 'Emoji Icon', defaultValue: '🎮' }),
-            color: fields.select({
-              label: 'Accent Color',
-              options: [
-                { label: 'Red', value: 'red' },
-                { label: 'Amber', value: 'amber' },
-                { label: 'Emerald', value: 'emerald' },
-                { label: 'Blue', value: 'blue' },
-                { label: 'Purple', value: 'purple' },
-              ],
-              defaultValue: 'red',
-            }),
+            question: fields.text({ label: 'Question' }),
+            answer: fields.text({ label: 'Answer', multiline: true }),
           }),
           {
-            label: 'Categories',
-            itemLabel: (props) => props.fields.name.value || 'New Category',
+            label: 'FAQ Items',
+            itemLabel: (props) => props.fields.question.value || 'FAQ Question',
           }
         ),
       },
