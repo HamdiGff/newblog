@@ -3,46 +3,67 @@ import { SITE } from '../utils/seo';
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950/50 py-10 transition-colors">
-  <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500 dark:text-neutral-400">
-    <!-- Brand / Status -->
-    <div class="flex items-center gap-2">
-      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="font-mono">All systems operational</span>
-      <span class="text-neutral-300 dark:text-neutral-700">•</span>
-      <span>© {currentYear} {SITE.title}</span>
+<footer class="mt-auto border-t border-neutral-800 bg-[#0c0c0e] text-neutral-400 py-12 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 space-y-8">
+    <!-- Top Row: Brand & Links -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Col 1: Brand Info -->
+      <div class="md:col-span-2 space-y-3">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-sm">
+            CF
+          </div>
+          <span class="text-lg font-black tracking-tight text-white uppercase">
+            CHEATER<span class="text-red-500">.FUN</span>
+          </span>
+        </a>
+        <p class="text-xs text-neutral-400 max-w-sm leading-relaxed">
+          The #1 community library for free, undetected game cheats, Roblox scripts, executors, and trainers. All downloads are community-tested and virus-scanned daily.
+        </p>
+        <div class="flex items-center gap-2 pt-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-xs font-mono text-emerald-400">All cheat downloads online & operational</span>
+        </div>
+      </div>
+
+      <!-- Col 2: Popular Categories -->
+      <div class="space-y-2.5 text-xs">
+        <div class="font-bold text-white uppercase tracking-wider font-mono">Popular Game Hubs</div>
+        <ul class="space-y-1.5 font-medium">
+          <li><a href="/game/roblox" class="hover:text-red-400 transition-colors">Roblox Scripts & Hubs</a></li>
+          <li><a href="/game/counter-strike-2" class="hover:text-red-400 transition-colors">CS2 Cheats & Aimbot</a></li>
+          <li><a href="/game/gta-v" class="hover:text-red-400 transition-colors">GTA V & FiveM Menus</a></li>
+          <li><a href="/category/injectors" class="hover:text-red-400 transition-colors">DLL Injectors & Bypasses</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Community & Socials -->
+      <div class="space-y-2.5 text-xs">
+        <div class="font-bold text-white uppercase tracking-wider font-mono">Community</div>
+        <ul class="space-y-1.5 font-medium">
+          <li><a href="https://discord.gg" target="_blank" rel="noopener noreferrer" class="hover:text-white text-indigo-400 transition-colors">Discord Server</a></li>
+          <li><a href="https://t.me" target="_blank" rel="noopener noreferrer" class="hover:text-white text-sky-400 transition-colors">Telegram Channel</a></li>
+          <li><a href="/rss.xml" class="hover:text-white transition-colors">RSS Updates Feed</a></li>
+          <li><a href="/sitemap-index.xml" class="hover:text-white transition-colors">Sitemap</a></li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Links -->
-    <div class="flex items-center gap-4 font-mono">
-      <a
-        href="/rss.xml"
-        class="hover:text-neutral-900 dark:hover:text-white transition-colors flex items-center gap-1"
-      >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 11a9 9 0 0 1 9 9"></path>
-          <path d="M4 4a16 16 0 0 1 16 16"></path>
-          <circle cx="5" cy="19" r="1"></circle>
-        </svg>
-        RSS
-      </a>
-      <a
-        href="/sitemap-index.xml"
-        class="hover:text-neutral-900 dark:hover:text-white transition-colors"
-      >
-        Sitemap
-      </a>
-      <a
-        href="https://vercel.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hover:text-neutral-900 dark:hover:text-white transition-colors flex items-center gap-1"
-      >
-        <span>Vercel</span>
-        <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-          <path d="M12 4L20 18H4L12 4Z" />
-        </svg>
-      </a>
+    <!-- Disclaimer Box -->
+    <div class="p-4 rounded-xl border border-neutral-800 bg-neutral-900/40 text-[11px] text-neutral-500 leading-relaxed">
+      <span class="font-bold text-neutral-400">Legal Disclaimer:</span> All software, scripts, and content provided on CHEATER.FUN are intended for single-player, educational research, and offline reverse-engineering analysis. We do not promote cheating in commercial multi-player competitive tournaments. Game logos and titles are registered trademarks of their respective publishers.
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="pt-6 border-t border-neutral-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-neutral-500">
+      <div>
+        © {currentYear} CHEATER.FUN — All rights reserved.
+      </div>
+      <div class="flex items-center gap-4">
+        <span>Fast Edge Hosted</span>
+        <span>•</span>
+        <a href="https://github.com/HamdiGff/newblog" class="hover:text-white transition-colors">GitHub</a>
+      </div>
     </div>
   </div>
 </footer>

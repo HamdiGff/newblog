@@ -13,7 +13,7 @@ export async function getStaticPaths() {
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
     return {
-      params: { tag: tag.toLowerCase() },
+      params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
       props: { tag, posts: filteredPosts },
     };
   });
@@ -23,31 +23,30 @@ const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout
-  title={`#${tag} Articles — Topic Archive`}
-  description={`Explore all articles tagged with #${tag}`}
+  title={`#${tag} Cheats & Scripts — CHEATER.FUN`}
+  description={`Browse all cheats and scripts tagged with #${tag}`}
 >
-  <div class="max-w-2xl mx-auto">
-    <!-- Header -->
-    <header class="mb-8">
+  <div class="space-y-6">
+    <header class="p-6 rounded-2xl border border-neutral-800 bg-[#121217] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="text-xs font-mono text-red-500 font-bold uppercase mb-1">Tag Filter</div>
+        <h1 class="text-2xl font-black text-white uppercase tracking-tight">
+          #{tag} Releases
+        </h1>
+        <p class="text-xs text-neutral-400 mt-1">
+          Showing {posts.length} release{posts.length === 1 ? '' : 's'} matching #{tag}.
+        </p>
+      </div>
+
       <a
-        href="/tags"
-        class="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors mb-4"
+        href="/"
+        class="px-3 py-1.5 rounded-lg border border-neutral-800 bg-neutral-900 text-xs font-mono text-neutral-300 hover:text-white transition-colors shrink-0"
       >
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        All tags
+        ← View all
       </a>
-      <h1 class="text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
-        Tag: <span class="font-mono text-neutral-500">#{tag}</span>
-      </h1>
-      <p class="text-sm text-neutral-600 dark:text-neutral-400">
-        Showing {posts.length} article{posts.length === 1 ? '' : 's'} categorized under #{tag}.
-      </p>
     </header>
 
-    <!-- Post list -->
-    <div class="flex flex-col gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {posts.map((post) => (
         <BlogPostCard post={post} />
       ))}

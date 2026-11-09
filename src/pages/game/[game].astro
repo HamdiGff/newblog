@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const gamesMap = new Map<string, typeof allPosts>();
+
+  allPosts.forEach((post) => {
+    const slug = post.data.game.toLowerCase().replace(/\s+/g, '-');
+    if (!gamesMap.has(slug)) {
+      gamesMap.set(slug, []);
+    }
+    gamesMap.get(slug)!.push(post);
+  });
+
+  return Array.from(gamesMap.entries()).map(([slug, posts]) => {
+    const originalGameName = posts[0].data.game;
+    posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return {
+      params: { game: slug },
+      props: { game: originalGameName, posts },
+    };
+  });
+}
+
+const { game, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`${game} Cheats, Scripts & Mods — CHEATER.FUN`}
+  description={`Download free undetected ${game} cheats, scripts, aimbots, ESPs, and trainers. Verified and working.`}
+>
+  <div class="space-y-6">
+    <!-- Header -->
+    <header class="p-6 rounded-2xl border border-neutral-800 bg-[#121217] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-red-400 font-bold uppercase">
+          <a href="/" class="hover:underline">Home</a>
+          <span>/</span>
+          <span>Game Hub</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
+          {game} Cheats & Scripts
+        </h1>
+        <p class="text-xs text-neutral-400">
+          Showing {posts.length} verified and working releases for {game}.
+        </p>
+      </div>
+
+      <a
+        href="/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-800 bg-neutral-900 text-xs font-mono text-neutral-300 hover:text-white transition-colors shrink-0"
+      >
+        ← View all games
+      </a>
+    </header>
+
+    <!-- Post list -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {posts.map((post) => (
+        <BlogPostCard post={post} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

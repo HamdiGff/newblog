@@ -12,18 +12,18 @@ interface Props {
 }
 
 const {
-  title = SITE.title,
+  title = `${SITE.title} — ${SITE.tagline}`,
   description = SITE.description,
   image = '/favicon.svg',
   articleDate,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://astro-vercel-blog.vercel.app');
-const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://newblog.vercel.app');
+const pageTitle = title.includes(SITE.title) ? title : `${title} | ${SITE.title}`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,39 +53,20 @@ const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, canonicalURL)} />
 
-    <!-- RSS Feed Auto-Discovery -->
+    <!-- RSS Feed -->
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
 
-    <!-- Google Fonts: Geist & Geist Mono -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Theme Inline Script to Prevent FOUC -->
-    <script is:inline>
-      const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
-        }
-        return 'light';
-      })();
-
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
   </head>
-  <body class="bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col antialiased transition-colors duration-200">
+  <body class="bg-[#09090b] text-neutral-100 min-h-screen flex flex-col antialiased">
     <Header />
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-8 md:py-12">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:py-8">
       <slot />
     </main>
     <Footer />

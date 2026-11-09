@@ -1,11 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import TagBadge from '../../components/TagBadge.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 
-// Count tags
 const tagCountMap: Record<string, number> = {};
 allPosts.forEach((post) => {
   post.data.tags?.forEach((tag) => {
@@ -16,20 +14,28 @@ allPosts.forEach((post) => {
 const sortedTags = Object.entries(tagCountMap).sort((a, b) => b[1] - a[1]);
 ---
 
-<BaseLayout title="All Tags — Topic Directory" description="Explore articles categorized by technology, design, and architecture topics.">
-  <div class="max-w-2xl mx-auto">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
-        Tags & Topics
+<BaseLayout title="All Tags & Topics — CHEATER.FUN" description="Browse all cheat and script tags.">
+  <div class="max-w-4xl mx-auto space-y-6">
+    <header class="p-6 rounded-2xl border border-neutral-800 bg-[#121217] space-y-2">
+      <h1 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+        All Game Tags & Keywords
       </h1>
-      <p class="text-sm text-neutral-600 dark:text-neutral-400">
-        Browse articles grouped by subject matter and technical keywords.
+      <p class="text-xs text-neutral-400">
+        Filter cheats by game mechanic, tool, or specific feature tag.
       </p>
     </header>
 
     <div class="flex flex-wrap gap-2.5">
       {sortedTags.map(([tag, count]) => (
-        <TagBadge tag={tag} count={count} />
+        <a
+          href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+          class="px-3.5 py-1.5 rounded-xl border border-neutral-800 bg-[#121217] text-neutral-300 hover:text-white hover:border-red-500/50 hover:bg-neutral-900 transition-colors flex items-center gap-2 text-xs font-mono font-medium"
+        >
+          <span>#{tag}</span>
+          <span class="px-1.5 py-0.5 rounded bg-neutral-900 text-[10px] text-neutral-500 font-bold border border-neutral-800">
+            {count}
+          </span>
+        </a>
       ))}
     </div>
   </div>

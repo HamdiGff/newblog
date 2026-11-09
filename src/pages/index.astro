@@ -7,133 +7,293 @@ import { SITE } from '../utils/seo';
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const featuredPosts = allPosts.filter((post) => post.data.featured).slice(0, 2);
-const recentPosts = allPosts.filter((post) => !post.data.featured).slice(0, 3);
+// Top trending posts (sorted by views/downloads)
+const popularPosts = [...allPosts].sort((a, b) => b.data.downloads - a.data.downloads).slice(0, 5);
+
+// Games list with post counts
+const gameCounts: Record<string, number> = {};
+allPosts.forEach((post) => {
+  gameCounts[post.data.game] = (gameCounts[post.data.game] || 0) + 1;
+});
+const gameList = Object.entries(gameCounts).sort((a, b) => b[1] - a[1]);
 ---
 
-<BaseLayout title={`${SITE.title} — Minimalist Developer Blog`}>
-  <!-- Hero Section -->
-  <section class="py-12 sm:py-16 flex flex-col items-start gap-6 border-b border-neutral-200 dark:border-neutral-800">
-    <!-- Status Badge -->
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 text-neutral-600 dark:text-neutral-400">
-      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-      <span>Astro 5 + Vercel Theme</span>
-      <span class="text-neutral-300 dark:text-neutral-700">|</span>
-      <span>100% Static Edge</span>
+<BaseLayout title={`${SITE.title} — Free Undetected Game Cheats & Roblox Scripts`}>
+  <!-- Top Welcome Banner -->
+  <section class="mb-8 p-6 rounded-2xl border border-neutral-800 bg-gradient-to-r from-neutral-900 via-[#121217] to-neutral-900 relative overflow-hidden">
+    <div class="relative z-10 max-w-3xl space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+        #1 Game Modding & Script Portal
+      </div>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white uppercase">
+        Free Undetected Game Cheats, <span class="text-red-500">Roblox Scripts</span> & Trainers
+      </h1>
+      <p class="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-2xl">
+        Download 100% free, safe, and community-tested game modifications, aimbots, ESPs, and Roblox executors. All scripts are verified daily against anti-cheat updates.
+      </p>
+
+      <!-- Live Search Bar inside Hero -->
+      <div id="search-section" class="pt-2 relative max-w-xl">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-400">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="cheat-search-input"
+            placeholder="Search scripts, games (e.g. Blox Fruits, CS2, GTA V, Solara)..."
+            class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-xl border border-neutral-700 bg-neutral-950/80 text-white placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all font-mono"
+          />
+        </div>
+      </div>
     </div>
 
-    <!-- Heading -->
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-950 dark:text-white leading-[1.1]">
-      High performance. <br class="hidden sm:inline" />
-      <span class="text-neutral-400 dark:text-neutral-500 font-normal">Minimalist design.</span>
-    </h1>
-
-    <!-- Subtitle -->
-    <p class="max-w-xl text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
-      A sleek developer blog engineered with Astro, Tailwind CSS, and Vercel design aesthetics. Zero runtime JavaScript bloat, type-safe content collections, and instant deployment.
-    </p>
-
-    <!-- CTAs -->
-    <div class="flex flex-wrap items-center gap-3 pt-2">
-      <a
-        href="/blog"
-        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
-      >
-        Read Articles
-      </a>
-      <a
-        href="https://github.com/vercel"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
-      >
-        GitHub
-      </a>
-      <a
-        href="https://vercel.com/new"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
-      >
-        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-          <path d="M12 4L20 18H4L12 4Z" />
-        </svg>
-        Deploy to Vercel
-      </a>
-    </div>
+    <!-- Decorative background glow -->
+    <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-red-600/10 blur-3xl pointer-events-none"></div>
   </section>
 
-  <!-- Featured Articles -->
-  {featuredPosts.length > 0 && (
-    <section class="py-12 border-b border-neutral-200 dark:border-neutral-800">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
-          Featured Posts
+  <!-- Category Filter Chips -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none border-b border-neutral-800/80">
+    <button
+      type="button"
+      data-filter="all"
+      class="category-btn active px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-red-600 text-white shrink-0 shadow-sm transition-all"
+    >
+      All Cheats ({allPosts.length})
+    </button>
+    <button
+      type="button"
+      data-filter="Roblox"
+      class="category-btn px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800 shrink-0 transition-all"
+    >
+      Roblox Scripts
+    </button>
+    <button
+      type="button"
+      data-filter="Counter-Strike 2"
+      class="category-btn px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800 shrink-0 transition-all"
+    >
+      CS2 Cheats
+    </button>
+    <button
+      type="button"
+      data-filter="GTA V"
+      class="category-btn px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800 shrink-0 transition-all"
+    >
+      GTA V & FiveM
+    </button>
+    <button
+      type="button"
+      data-filter="Injectors"
+      class="category-btn px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800 shrink-0 transition-all"
+    >
+      Executors & Loaders
+    </button>
+  </div>
+
+  <!-- Main 2-Column Content Layout (cheater.fun layout) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left Column: Primary Post Grid Feed (8 cols) -->
+    <div class="lg:col-span-8 space-y-6">
+      <div class="flex items-center justify-between pb-2 border-b border-neutral-800">
+        <h2 class="text-sm font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          Latest Game Cheats & Scripts
         </h2>
-        <a
-          href="/blog"
-          class="text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-        >
-          View all →
-        </a>
+        <span id="results-count" class="text-xs font-mono text-neutral-500">
+          Showing {allPosts.length} releases
+        </span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {featuredPosts.map((post) => (
-          <BlogPostCard post={post} />
+
+      <!-- Grid of Cheat Cards -->
+      <div id="cheats-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {allPosts.map((post) => (
+          <div
+            class="cheat-card-item"
+            data-title={post.data.title}
+            data-description={post.data.description}
+            data-game={post.data.game}
+            data-category={post.data.category}
+            data-tags={post.data.tags.join(' ')}
+          >
+            <BlogPostCard post={post} />
+          </div>
         ))}
       </div>
-    </section>
-  )}
 
-  <!-- Recent Articles -->
-  <section class="py-12 border-b border-neutral-200 dark:border-neutral-800">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold">
-        Recent Writings
-      </h2>
-      <a
-        href="/blog"
-        class="text-xs font-mono text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-      >
-        All posts ({allPosts.length}) →
-      </a>
-    </div>
-    <div class="flex flex-col gap-3">
-      {recentPosts.map((post) => (
-        <BlogPostCard post={post} />
-      ))}
-    </div>
-  </section>
-
-  <!-- Tech Highlights / Features -->
-  <section class="py-12">
-    <h2 class="text-xs font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-semibold mb-6">
-      Built for the Modern Web
-    </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
-        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">01 / SPEED</div>
-        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">100/100 Core Web Vitals</h3>
-        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          Static HTML served directly from Vercel's global Anycast edge network with zero database query lag.
-        </p>
-      </div>
-
-      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
-        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">02 / TYPE-SAFETY</div>
-        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">Content Layer & Zod</h3>
-        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          Catch invalid frontmatter dates and missing attributes at compile-time with strictly typed Markdown.
-        </p>
-      </div>
-
-      <div class="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-950">
-        <div class="text-xs font-mono text-neutral-400 dark:text-neutral-500 mb-1">03 / DESIGN</div>
-        <h3 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-2">Vercel Aesthetics</h3>
-        <p class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          Geist typography, dark mode toggle, subtle borders, and RSS feeds out of the box.
-        </p>
+      <!-- No Results State -->
+      <div id="no-cheats-message" class="hidden text-center py-16 bg-[#121216] rounded-xl border border-neutral-800">
+        <p class="text-sm font-mono text-neutral-400">No cheats found matching your search.</p>
+        <p class="text-xs text-neutral-600 mt-1">Try searching for a different game or reset the filters.</p>
       </div>
     </div>
-  </section>
+
+    <!-- Right Column: Sidebar (4 cols) -->
+    <aside class="lg:col-span-4 space-y-6">
+      <!-- Community Join Card -->
+      <div class="p-5 rounded-2xl border border-indigo-950/60 bg-gradient-to-b from-indigo-950/30 to-[#121217] space-y-3">
+        <div class="flex items-center gap-2 text-indigo-400">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          <span class="font-bold text-sm text-white">Join Cheat Community</span>
+        </div>
+        <p class="text-xs text-neutral-400 leading-relaxed">
+          Get real-time alerts when cheats are updated, request new scripts, and receive 24/7 injector troubleshooting help.
+        </p>
+        <a
+          href="https://discord.gg"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block text-center py-2 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg shadow-indigo-950/40"
+        >
+          Join Discord (24,500 Online)
+        </a>
+      </div>
+
+      <!-- Top Trending Cheats -->
+      <div class="p-5 rounded-2xl border border-neutral-800 bg-[#121217] space-y-4">
+        <div class="flex items-center justify-between border-b border-neutral-800 pb-2">
+          <div class="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+            <span>🔥</span>
+            <span>Trending This Week</span>
+          </div>
+          <span class="text-[10px] font-mono text-red-400">HOT</span>
+        </div>
+
+        <div class="space-y-3">
+          {popularPosts.map((post, index) => (
+            <a
+              href={`/blog/${post.id}`}
+              class="flex items-start gap-3 group p-2 rounded-lg hover:bg-neutral-900 transition-colors"
+            >
+              <span class={`font-mono font-black text-sm shrink-0 w-5 ${index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-neutral-500'}`}>
+                #{index + 1}
+              </span>
+              <div class="space-y-1 min-w-0">
+                <h3 class="text-xs font-bold text-neutral-200 group-hover:text-red-400 transition-colors line-clamp-2">
+                  {post.data.title}
+                </h3>
+                <div class="flex items-center gap-2 text-[10px] font-mono text-neutral-500">
+                  <span>{post.data.game}</span>
+                  <span>•</span>
+                  <span>{(post.data.downloads / 1000).toFixed(1)}k dl</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Popular Game Hubs -->
+      <div class="p-5 rounded-2xl border border-neutral-800 bg-[#121217] space-y-3">
+        <div class="text-xs font-mono font-bold uppercase tracking-wider text-white border-b border-neutral-800 pb-2">
+          Game Categories
+        </div>
+        <div class="flex flex-col gap-1.5 text-xs">
+          {gameList.map(([game, count]) => (
+            <a
+              href={`/game/${game.toLowerCase().replace(/\s+/g, '-')}`}
+              class="flex items-center justify-between p-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-900 transition-colors"
+            >
+              <span class="font-medium">{game}</span>
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400">
+                {count} releases
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Anti-Cheat Status & Safety Tips -->
+      <div class="p-5 rounded-2xl border border-neutral-800 bg-[#121217] space-y-3 text-xs text-neutral-400 leading-relaxed">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold font-mono uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Safety & Antivirus Notice
+        </div>
+        <p>
+          Game injectors and mod trainers modify active game memory. Some antivirus tools can flag them as False Positives.
+        </p>
+        <p class="text-[11px] text-neutral-500">
+          Always run cheats on secondary/alt accounts first and check our Discord status feed before each match.
+        </p>
+      </div>
+    </aside>
+  </div>
 </BaseLayout>
+
+<script is:inline>
+  const searchInput = document.getElementById('cheat-search-input');
+  const cheatCards = document.querySelectorAll('.cheat-card-item');
+  const resultsCount = document.getElementById('results-count');
+  const noCheats = document.getElementById('no-cheats-message');
+  const categoryBtns = document.querySelectorAll('.category-btn');
+
+  let activeCategory = 'all';
+
+  function filterCheats() {
+    const query = (searchInput?.value || '').toLowerCase().trim();
+    let visible = 0;
+
+    cheatCards.forEach((card) => {
+      const title = (card.getAttribute('data-title') || '').toLowerCase();
+      const desc = (card.getAttribute('data-description') || '').toLowerCase();
+      const game = (card.getAttribute('data-game') || '').toLowerCase();
+      const category = (card.getAttribute('data-category') || '').toLowerCase();
+      const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+
+      const matchesQuery = !query || title.includes(query) || desc.includes(query) || game.includes(query) || tags.includes(query);
+      const matchesCategory =
+        activeCategory === 'all' ||
+        game.includes(activeCategory.toLowerCase()) ||
+        category.includes(activeCategory.toLowerCase());
+
+      if (matchesQuery && matchesCategory) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (resultsCount) {
+      resultsCount.textContent = `Showing ${visible} release${visible === 1 ? '' : 's'}`;
+    }
+
+    if (noCheats) {
+      if (visible === 0) {
+        noCheats.classList.remove('hidden');
+      } else {
+        noCheats.classList.add('hidden');
+      }
+    }
+  }
+
+  // Keyboard shortcut '/'
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput?.focus();
+    }
+  });
+
+  searchInput?.addEventListener('input', filterCheats);
+
+  categoryBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach((b) => {
+        b.classList.remove('active', 'bg-red-600', 'text-white');
+        b.classList.add('bg-neutral-900', 'text-neutral-400');
+      });
+
+      btn.classList.add('active', 'bg-red-600', 'text-white');
+      btn.classList.remove('bg-neutral-900', 'text-neutral-400');
+
+      activeCategory = btn.getAttribute('data-filter') || 'all';
+      filterCheats();
+    });
+  });
+</script>

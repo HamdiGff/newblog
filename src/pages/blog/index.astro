@@ -1,72 +1,27 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPostCard from '../../components/BlogPostCard.astro';
-import SearchBar from '../../components/SearchBar.astro';
-import TagBadge from '../../components/TagBadge.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-// Collect all unique tags
-const tags = Array.from(
-  new Set(allPosts.flatMap((post) => post.data.tags || []))
-).sort();
 ---
 
-<BaseLayout title="All Articles — Blog" description="Browse all technical articles, guides, and engineering reflections.">
-  <div class="max-w-2xl mx-auto">
-    <!-- Header -->
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
-        Blog
+<BaseLayout title="All Cheats & Scripts Archive — CHEATER.FUN" description="Browse all available game hacks, Roblox scripts, and mod menus.">
+  <div class="space-y-6">
+    <header class="p-6 rounded-2xl border border-neutral-800 bg-[#121217] space-y-2">
+      <h1 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+        All Game Cheats & Scripts Archive
       </h1>
-      <p class="text-sm text-neutral-600 dark:text-neutral-400">
-        Articles, architecture breakdowns, and notes on frontend development and developer tooling.
+      <p class="text-xs text-neutral-400">
+        Showing all {allPosts.length} releases sorted by release date.
       </p>
     </header>
 
-    <!-- Search Bar -->
-    <div class="mb-6">
-      <SearchBar />
-    </div>
-
-    <!-- Tag Filter Pills -->
-    {tags.length > 0 && (
-      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 border-b border-neutral-200 dark:border-neutral-800 scrollbar-none">
-        <span class="text-xs font-mono text-neutral-400 dark:text-neutral-500 shrink-0">Tags:</span>
-        <a
-          href="/blog"
-          class="px-2.5 py-0.5 text-xs font-mono rounded-full bg-black dark:bg-white text-white dark:text-black shrink-0 font-medium"
-        >
-          All
-        </a>
-        {tags.map((tag) => (
-          <div class="shrink-0">
-            <TagBadge tag={tag} />
-          </div>
-        ))}
-      </div>
-    )}
-
-    <!-- Posts List -->
-    <div id="posts-container" class="flex flex-col gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {allPosts.map((post) => (
-        <div
-          class="post-card-item"
-          data-title={post.data.title}
-          data-description={post.data.description}
-          data-tags={(post.data.tags || []).join(' ')}
-        >
-          <BlogPostCard post={post} />
-        </div>
+        <BlogPostCard post={post} />
       ))}
-    </div>
-
-    <!-- Empty State -->
-    <div id="no-results-message" class="hidden text-center py-16">
-      <p class="text-sm text-neutral-500 dark:text-neutral-400 font-mono">No matching articles found.</p>
-      <p class="text-xs text-neutral-400 dark:text-neutral-600 mt-1">Try another keyword or clear the search.</p>
     </div>
   </div>
 </BaseLayout>
